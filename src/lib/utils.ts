@@ -6,7 +6,8 @@ import {
 	type MessageCommandSuccessPayload
 } from '@sapphire/framework';
 import { cyan } from 'colorette';
-import type { APIUser, Guild, User } from 'discord.js';
+import { EmbedBuilder, type APIUser, type Guild, type User } from 'discord.js';
+import { Card } from 'scryfall-sdk';
 
 export function logSuccessCommand(payload: ContextMenuCommandSuccessPayload | ChatInputCommandSuccessPayload | MessageCommandSuccessPayload): void {
 	let successLoggerData: ReturnType<typeof getSuccessLoggerData>;
@@ -44,4 +45,14 @@ function getAuthorInfo(author: User | APIUser) {
 function getGuildInfo(guild: Guild | null) {
 	if (guild === null) return 'Direct Messages';
 	return `${guild.name}[${cyan(guild.id)}]`;
+}
+
+
+export function createCardEmbed(card: Card) {
+	const embed = new EmbedBuilder()
+		.setTitle(`${card.name}`)
+		.setDescription(card.oracle_text ? card.oracle_text : card.type_line)
+		.setURL(card.scryfall_uri)
+		.setThumbnail(card.image_uris ? card.image_uris.normal : null);
+	return embed
 }

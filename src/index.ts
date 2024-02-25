@@ -1,4 +1,5 @@
-import './lib/setup';
+import './lib/setup.js';
+import '@sapphire/plugin-hmr/register'
 
 import { LogLevel, SapphireClient } from '@sapphire/framework';
 import { GatewayIntentBits } from 'discord.js';
@@ -10,7 +11,10 @@ const client = new SapphireClient({
 		level: LogLevel.Debug
 	},
 	intents: [GatewayIntentBits.DirectMessages, GatewayIntentBits.GuildMessages, GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent],
-	loadMessageCommandListeners: true
+	loadMessageCommandListeners: true,
+	hmr: {
+		enabled: process.env.NODE_ENV === 'development',
+	}
 });
 
 const main = async () => {
