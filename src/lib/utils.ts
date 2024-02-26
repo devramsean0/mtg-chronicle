@@ -6,8 +6,9 @@ import {
 	type MessageCommandSuccessPayload
 } from '@sapphire/framework';
 import { cyan } from 'colorette';
-import { EmbedBuilder, type APIUser, type Guild, type User } from 'discord.js';
+import { EmbedBuilder, type APIUser, type Guild, type User, Message } from 'discord.js';
 import { Card } from 'scryfall-sdk';
+import { PublicPaginatedMessage } from './extensions/PaignatedMessages.js';
 
 export function logSuccessCommand(payload: ContextMenuCommandSuccessPayload | ChatInputCommandSuccessPayload | MessageCommandSuccessPayload): void {
 	let successLoggerData: ReturnType<typeof getSuccessLoggerData>;
@@ -47,12 +48,12 @@ function getGuildInfo(guild: Guild | null) {
 	return `${guild.name}[${cyan(guild.id)}]`;
 }
 
-
-export function createCardEmbed(card: Card) {
-	const embed = new EmbedBuilder()
-		.setTitle(`${card.name}`)
-		.setDescription(card.oracle_text ? card.oracle_text : card.type_line)
-		.setURL(card.scryfall_uri)
-		.setThumbnail(card.image_uris ? card.image_uris.normal : null);
-	return embed
+export function titleCase(str: string) {
+	return str
+		.toLowerCase()
+		.split(' ')
+		.map(function (word) {
+			return word.replace(word[0], word[0].toUpperCase());
+		})
+		.join(' ');
 }
