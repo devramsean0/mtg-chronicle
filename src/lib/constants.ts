@@ -5,6 +5,7 @@ export const srcDir = join(rootDir, 'src');
 
 // Regex
 export const cardNameRegex = /\[\[([^\]]+)\]\]/g;
+export const manaValueRegex = /\{(.*?)\}/g;
 
 // TTL
 export enum RedisTTLDurations {

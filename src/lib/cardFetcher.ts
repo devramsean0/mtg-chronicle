@@ -5,6 +5,7 @@ import { titleCase } from './utils.js';
 import Scry, { Card } from 'scryfall-sdk';
 import { RedisTTLDurations } from './constants.js';
 import { PublicPaginatedMessage } from './extensions/PaignatedMessages.js';
+import { manamoji } from './emojis.js';
 
 export class CardFetcher {
 	private logPrefix: string = '';
@@ -79,8 +80,8 @@ export class CardFetcher {
 	}
 	createCardEmbed(card: Card) {
 		const embed = new EmbedBuilder()
-			.setTitle(`${card.name}`)
-			.setDescription(card.oracle_text ? card.oracle_text : card.type_line)
+			.setTitle(`${card.name} ${manamoji(String(card.mana_cost), )}`)
+			.setDescription(manamoji(`${String(card.type_line)}\n${card.oracle_text}`))
 			.setURL(card.scryfall_uri)
 			.setThumbnail(card.image_uris ? card.image_uris.normal : null);
 		return embed;

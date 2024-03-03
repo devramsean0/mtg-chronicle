@@ -6,9 +6,7 @@ import {
 	type MessageCommandSuccessPayload
 } from '@sapphire/framework';
 import { cyan } from 'colorette';
-import { EmbedBuilder, type APIUser, type Guild, type User, Message } from 'discord.js';
-import { Card } from 'scryfall-sdk';
-import { PublicPaginatedMessage } from './extensions/PaignatedMessages.js';
+import { type APIUser, type Guild, type User } from 'discord.js';
 
 export function logSuccessCommand(payload: ContextMenuCommandSuccessPayload | ChatInputCommandSuccessPayload | MessageCommandSuccessPayload): void {
 	let successLoggerData: ReturnType<typeof getSuccessLoggerData>;
