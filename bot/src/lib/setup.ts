@@ -10,7 +10,7 @@ import { join } from 'node:path';
 import { rootDir } from './constants.js';
 
 // Read env var
-setup({ path: join(rootDir, '.env') });
+setup({ path: join(rootDir, '../env') });
 
 // Set default behavior to bulk overwrite
 ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(RegisterBehavior.BulkOverwrite);
