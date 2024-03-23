@@ -27,7 +27,9 @@ const main = async () => {
 	try {
 		// Redis
 		await redisClient.connect();
+		// Modify Container
 		container.redis = redisClient;
+		container.cardCache = new Map<string, any>();
 		client.logger.info('Connected to Redis');
 		client.logger.info('Logging in');
 		await client.login();
@@ -44,5 +46,6 @@ void main();
 declare module '@sapphire/pieces' {
 	interface Container {
 		redis: typeof redisClient;
+		cardCache: Map<string, any>;
 	}
 }

@@ -47,11 +47,11 @@ function getGuildInfo(guild: Guild | null) {
 }
 
 export function titleCase(str: string) {
-	return str
-		.toLowerCase()
-		.split(' ')
-		.map(function (word) {
-			return word.replace(word[0], word[0].toUpperCase());
-		})
-		.join(' ');
+    if (!/[a-zA-Z]/.test(str.charAt(0))) {
+        const nonLetterChar = str.charAt(0);
+        const restOfString = str.slice(1).toLowerCase();
+        return nonLetterChar + restOfString.replace(/\b\w/g, (char) => char.toUpperCase());
+    } else {
+        return str.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
+    }
 }

@@ -12,7 +12,6 @@ export class UserEvent extends Listener {
 		this.container.logger.debug(`[messageCreate] Recieved a message - ${message.id}`);
 		const cardsSet = await cardFetcher.parseForCards(message);
 		if (!cardsSet) return;
-		const cardData: any[] = await cardFetcher.runFetch(cardsSet, message);
-		await cardFetcher.sendEmbeds(cardData, message);
+		await cardFetcher.multicardSend(cardsSet, message);
 	}
 }
