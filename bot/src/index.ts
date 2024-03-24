@@ -13,14 +13,16 @@ redisClient.on('error', (err) => container.logger.error(`[REDIS] ${err}`));
 const client = new SapphireClient({
 	defaultPrefix: '!',
 	caseInsensitiveCommands: true,
-	logger: {
-		level: LogLevel.Debug
-	},
 	intents: [GatewayIntentBits.DirectMessages, GatewayIntentBits.GuildMessages, GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent],
 	loadMessageCommandListeners: true,
+	loadDefaultErrorListeners: true,
+	logger: {
+		level: LogLevel.Info
+	},
 	hmr: {
 		enabled: process.env.NODE_ENV === 'development'
-	}
+	},
+	shards: 'auto'
 });
 
 const main = async () => {

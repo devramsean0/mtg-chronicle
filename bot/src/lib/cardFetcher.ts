@@ -127,6 +127,7 @@ export class CardFetcher {
 	}
 	displayCardList(embeds: any[], message: Message) {
 		// Send embeds
+		if (embeds.length == 0) return;
 		if (embeds.length <= 5 || !this.paignation_enabled) message.channel.send({embeds: embeds.slice(0, 10).map((embed) => embed)});
 		else {
 			const paignatedMessage = new PublicPaginatedMessage();
