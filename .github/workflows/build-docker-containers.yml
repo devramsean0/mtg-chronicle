@@ -28,5 +28,5 @@ jobs:
 
           - name: 'Build Inventory Image'
             run: |
-              docker build . --tag ghcr.io/devramsean0/Scryfall-Dump-Parser:latest
-              docker push ghcr.io/devramsean0/Scryfall-Dump-Parser:latest
+              docker build . --tag ghcr.io/devramsean0/scryfall-dump-parser:latest
+              docker push ghcr.io/devramsean0/scryfall-dump-parser:latest
