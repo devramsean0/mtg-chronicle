@@ -7,6 +7,9 @@ on:
 
 jobs:
   docker_publish:
+    defaults:
+      run:
+        working-directory: './dump-parser'
     runs-on: "ubuntu-20.04"
 
     steps:
@@ -16,5 +19,5 @@ jobs:
       - name: Build and publish a Docker image for ${{ github.repository }}
         uses: macbre/push-to-ghcr@master
         with:
-          image_name: Scryfall-Dump-Parser # it will be lowercased internally
+          image_name: 'Scryfall-Dump-Parser' # it will be lowercased internally
           github_token: ${{ secrets.GITHUB_TOKEN }}
