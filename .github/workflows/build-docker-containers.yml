@@ -1,23 +1,41 @@
-name: Build and publish to ghcr
-on:
+name: Create and publish a Docker image
 
+on:
   push:
-    branches:
-      - main
+    branches: ['main']
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  docker_publish:
-    defaults:
-      run:
-        working-directory: './dump-parser'
-    runs-on: "ubuntu-20.04"
+  build-and-push-image:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      # https://github.com/marketplace/actions/push-to-ghcr
-      - name: Build and publish a Docker image for ${{ github.repository }}
-        uses: macbre/push-to-ghcr@master
+      - name: Log in to the Container registry
+        uses: docker/login-action@ec9cdf07d570632daeb912f5b2099cb9ec1d01e6
         with:
-          image_name: 'Scryfall-Dump-Parser' # it will be lowercased internally
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@3343011071fa59c64a174cc6aa415dc13b31b7b2
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-dumpparser
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@35434f557ad77672899d67f7992fb5560bda1071
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
