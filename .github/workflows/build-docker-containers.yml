@@ -14,7 +14,9 @@ jobs:
     permissions:
       contents: read
       packages: write
-
+    defaults:
+      run:
+        working-directory: './dump-parser/'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
