@@ -16,7 +16,7 @@ jobs:
       packages: write
     defaults:
       run:
-        working-directory: './dump-parser/'
+        working-directory: 'dump-parser/'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
