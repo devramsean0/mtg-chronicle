@@ -29,3 +29,10 @@ jobs:
           file: ./dump-parser/Dockerfile
           push: true
           tags: ghcr.io/${{ github.repository }}/dump-parser:latest
+      - name: Push bot to Github Packages
+        uses: docker/build-push-action@v2
+        with:
+          context: ./bot/
+          file: ./bot/Dockerfile
+          push: true
+          tags: ghcr.io/${{ github.repository }}/bot:latest

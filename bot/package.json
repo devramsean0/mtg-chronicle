@@ -39,5 +39,9 @@
 		"watch:start": "tsc-watch --onSuccess \"npm run start\"",
 		"format": "prettier --write \"src/\""
 	},
-	"prettier": "@sapphire/prettier-config"
+	"prettier": "@sapphire/prettier-config",
+	"volta": {
+		"node": "20.12.2",
+		"yarn": "4.1.1"
+	}
 }
