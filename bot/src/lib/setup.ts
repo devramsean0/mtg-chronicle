@@ -1,5 +1,6 @@
 // Unless explicitly defined, set NODE_ENV as development:
 process.env.NODE_ENV ??= 'development';
+process.env.DEBUG_LOGGING ??= 'false';
 
 import { ApplicationCommandRegistries, RegisterBehavior } from '@sapphire/framework';
 import '@sapphire/plugin-logger/register';
