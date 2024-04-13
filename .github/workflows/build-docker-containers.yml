@@ -43,4 +43,4 @@ jobs:
           context: ./${{ matrix.component }}/
           file: ./${{ matrix.component }}/Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository }}/${{ matrix.component }}:latest
+          tags: ghcr.io/${{ github.repository }}/${{ matrix.component }}:${{ github.event.pull_request.number || 'latest' }}
