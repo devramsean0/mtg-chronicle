@@ -20,7 +20,6 @@ jobs:
               - 'dump-parser/**'
 
   push_to_registry:
-    if: ${{ needs.check_changes.outputs[ matrix.component ] == 'true' }}
     needs: check_changes
     runs-on: ubuntu-latest
     strategy:
