@@ -40,5 +40,5 @@ jobs:
         with:
           context: ${{ matrix.component }}
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/${{ matrix.component }}:latest
+          tags: ghcr.io/${{ github.repository }}/${{ matrix.component }}/${{ matrix.component }}:${{ github.event.pull_request.number || 'latest' }}
         if: ${{ needs.check_changes.outputs[ matrix.component ] == 'true' }}
