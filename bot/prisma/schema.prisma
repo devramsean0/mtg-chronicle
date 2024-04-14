@@ -1,0 +1,39 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Guild {
+  id          String        @id @default(cuid())
+  name        String
+  CustomCards CustomCards[]
+}
+
+model CustomCards {
+  id              String   @id @default(cuid())
+  name            String?
+  cost            String?
+  power           Int?
+  toughness       Int?
+  supertypes      String[]
+  types           String[]
+  subtypes        String[]
+  collectorNumber String?
+  rarity          String
+  artist          String
+  setName         String
+  setCode         String?
+  oracleText      String
+  guild           Guild    @relation(fields: [guildId], references: [id])
+  guildId         String
+}

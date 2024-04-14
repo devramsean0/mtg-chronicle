@@ -6,7 +6,16 @@ services:
       - 6379:6379
     volumes:
       - redis_data:/data
-
+  postgres:
+    image: postgres
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
   marian-rebrow:
     image: marian/rebrow
     ports:
@@ -26,3 +35,4 @@ services:
       - REDIS_URL=redis://redis:6379/0
 volumes:
   redis_data:
+  postgres_data:

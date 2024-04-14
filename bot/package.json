@@ -6,6 +6,7 @@
 	"license": "MIT",
 	"type": "module",
 	"dependencies": {
+		"@prisma/client": "^5.12.1",
 		"@sapphire/decorators": "^6.0.4",
 		"@sapphire/discord.js-utilities": "7.1.6",
 		"@sapphire/framework": "^5.0.7",
@@ -26,6 +27,7 @@
 		"@types/ws": "^8.5.10",
 		"npm-run-all2": "^5.0.0",
 		"prettier": "^3.2.4",
+		"prisma": "^5.12.1",
 		"tsc-watch": "^6.0.4",
 		"typescript": "^5.3.3"
 	},
