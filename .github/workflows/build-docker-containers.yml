@@ -1,6 +1,11 @@
 name: Build and Push Docker Images
 
-on: [push, pull_request]
+on:
+  push:
+    - main
+  pull_request:
+    - main
+  workflow_dispatch:
 
 jobs:
   check_changes:
