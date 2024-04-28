@@ -12,6 +12,7 @@ import { ICustomCardCreateModalCustomIDMetadata } from '../../../commands/custom
 })
 export class ModalHandler extends InteractionHandler {
 	public async run(interaction: ModalSubmitInteraction) {
+		await interaction.deferReply({ ephemeral: true });
 		// Send attachment to keeper channel
 		const channel_id = envParseString('KEEPER_CHANNEL_ID');
 		const channel = await interaction.client.channels.fetch(channel_id);
@@ -69,23 +70,22 @@ export class ModalHandler extends InteractionHandler {
 			where: { id: imageRow.id },
 			data: { message_id: imageMessage.id }
 		})
-		const compressedMetadata = compressCustomIDMetadata<ICustomCardCreateModalCustomIDMetadataShorter>({ cardID: customCardRow.id });
+		const compressedMetadata = compressCustomIDMetadata<ICustomCardCreateButtonCustomIDMetadata>({ cardID: customCardRow.id });
 		// Send the selection method for next steps
 		const aditionalCardInfoButton = new ButtonBuilder()
-			.setCustomId(`${CustomIDPrefixes.cc_short}additional_info:${compressedMetadata}`)
+			.setCustomId(`${CustomIDPrefixes.cc_stage_2_long}additional_info:${compressedMetadata}`)
 			.setLabel('Additional Card Info')
 			.setStyle(ButtonStyle.Primary);
 		const setInformation = new ButtonBuilder()
-			.setCustomId(`${CustomIDPrefixes.cc_short}set_information:${compressedMetadata}`)
+			.setCustomId(`${CustomIDPrefixes.cc_stage_2_long}set_information:${compressedMetadata}`)
 			.setLabel('Set Information')
 			.setStyle(ButtonStyle.Primary);
 		const actionRow = new ActionRowBuilder<ButtonBuilder>()
 			.addComponents(aditionalCardInfoButton, setInformation);
 		
-		return await interaction.reply({
+		return await interaction.editReply({
 			content: 'What would you like to do next?',
 			components: [actionRow],
-			ephemeral: true
 		});
 	}
 
@@ -95,6 +95,6 @@ export class ModalHandler extends InteractionHandler {
 	}
 }
 
-export interface ICustomCardCreateModalCustomIDMetadataShorter {
+export interface ICustomCardCreateButtonCustomIDMetadata {
 	cardID: string;
 }

@@ -22,5 +22,6 @@ export enum RedisTTLDurations {
 export enum CustomIDPrefixes {
 	"cc_stage_1_long" = "customcard_1:",
 	"cc_stage_2_long" = "customcard_2:",
+	"cc_stage_3_long" = "customcard_3:",
 	"cc_short" = "cc:"
 }
