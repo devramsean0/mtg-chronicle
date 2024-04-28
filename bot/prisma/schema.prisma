@@ -16,24 +16,32 @@ datasource db {
 model Guild {
   id          String        @id @default(cuid())
   name        String
+  discord_id  String        @unique
   CustomCards CustomCards[]
 }
 
+model CustomCardImage {
+  id                 Int           @id @default(autoincrement())
+  original_image_url String
+  message_id         String?       @unique
+  CustomCards        CustomCards[]
+}
+
 model CustomCards {
-  id              String   @id @default(cuid())
-  name            String?
-  cost            String?
-  power           Int?
-  toughness       Int?
-  supertypes      String[]
-  types           String[]
-  subtypes        String[]
-  collectorNumber String?
-  rarity          String
-  artist          String
-  setName         String
-  setCode         String?
-  oracleText      String
-  guild           Guild    @relation(fields: [guildId], references: [id])
-  guildId         String
+  id                String          @id @default(cuid())
+  name              String
+  mana_cost         String? // Stage 1
+  power             Int? // Stage 1
+  toughness         Int? // Stage 1
+  type_line         String // Stage 1
+  collectorNumber   String? // Additional Card Info
+  rarity            String // Stage 1
+  artist            String? // Additional Card Info
+  setName           String? // Set Info
+  setCode           String? // Set Info
+  oracleText        String // Stage 1
+  guild             Guild           @relation(fields: [guildId], references: [id])
+  guildId           String
+  CustomCardImage   CustomCardImage @relation(fields: [customCardImageId], references: [id])
+  customCardImageId Int
 }

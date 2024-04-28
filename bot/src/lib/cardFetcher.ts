@@ -80,6 +80,9 @@ export class CardFetcher {
 			}
 		} else return JSON.parse(String(await container.redis.get(`card:${name}`)));
 	}
+	async fetchCustomCard() {
+		
+	}
 	createInfoCardEmbed(card: Card) {
 		const embed = new EmbedBuilder()
 			.setTitle(`${card.name} ${manamoji(String(card.mana_cost), )}`)

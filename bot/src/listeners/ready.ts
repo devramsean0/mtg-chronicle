@@ -12,6 +12,7 @@ export class UserEvent extends Listener {
 	public override run() {
 		this.printBanner();
 		this.printStoreDebugInformation();
+		this.printStatistics();
 	}
 
 	private printBanner() {
@@ -39,13 +40,26 @@ ${line03}${dev ? ` ${pad}${blc('<')}${llc('/')}${blc('>')} ${llc('DEVELOPMENT MO
 	private printStoreDebugInformation() {
 		const { client, logger } = this.container;
 		const stores = [...client.stores.values()];
-		const last = stores.pop()!;
 
 		for (const store of stores) logger.info(this.styleStore(store, false));
-		logger.info(this.styleStore(last, true));
 	}
 
 	private styleStore(store: StoreRegistryValue, last: boolean) {
 		return gray(`${last ? '└─' : '├─'} Loaded ${this.style(store.size.toString().padEnd(3, ' '))} ${store.name}.`);
+	}
+	private async printStatistics() {
+		const statisticMessages: string[] = [
+			`Loaded ${await this.container.db.customCards.count()} custom cards.`,
+			`Loaded ${await this.container.db.guild.count()} guilds with custom cards.`,
+			`Loaded ${this.container.client.guilds.cache.size} guilds.`,
+			`Loaded ${this.container.client.channels.cache.size} channels.`,
+			`Loaded ${this.container.client.users.cache.size} users.`,
+		]
+		const last = statisticMessages.pop()!;
+		for (const message of statisticMessages) this.container.logger.info(this.printStatistic(message, false));
+		this.container.logger.info(this.printStatistic(last, true));
+	}
+	private printStatistic(message: string, last: boolean) {
+		return green(`${last ? '└─' : '├─'} ${message}`);
 	}
 }

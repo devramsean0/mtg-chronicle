@@ -59,3 +59,9 @@ declare module '@sapphire/pieces' {
 		db: PrismaClient;
 	}
 }
+
+declare module '@skyra/env-utilities' {
+	interface Env {
+		KEEPER_CHANNEL_ID: string;
+	}
+}

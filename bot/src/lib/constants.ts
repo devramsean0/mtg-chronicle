@@ -17,3 +17,10 @@ export enum RedisTTLDurations {
 	MONTH = 2592000,
 	YEAR = 31536000
 }
+
+// Custom ID Shortenings
+export enum CustomIDPrefixes {
+	"cc_stage_1_long" = "customcard_1:",
+	"cc_stage_2_long" = "customcard_2:",
+	"cc_short" = "cc:"
+}
