@@ -24,7 +24,7 @@ export class ModalHandler extends InteractionHandler {
 			identifier: 'KeeperChannelNotFound',
 			message: 'The Keeper channel was not found. Please reach out to support for more information.'
 		});;
-		const customIDMetadata = interaction.customId.replaceAll(`${CustomIDPrefixes.cc_stage_1_long}:create:`, '')
+		const customIDMetadata = interaction.customId.replaceAll(`${CustomIDPrefixes.cc_stage_1_long}create:`, '')
 		console.log(interaction.customId, customIDMetadata)
 		const { image, name } = decompressCustomIDMetadata<ICustomCardCreateModalCustomIDMetadata>(customIDMetadata);
 		const imageRow = await this.container.db.customCardImage.findUnique({
@@ -41,7 +41,7 @@ export class ModalHandler extends InteractionHandler {
 		// Save current to DB
 		const powerToughness = interaction.fields.getTextInputValue(`${CustomIDPrefixes.cc_short}power_toughness`);
 		const splitPowerToughness = powerToughness ? powerToughness.split('/') : [0, 0]
-		const dbGuild =await this.container.db.guild.upsert({
+		const dbGuild = await this.container.db.guild.upsert({
 			where: {  discord_id: String(interaction.guildId)},
 			create: {
 				name: String(interaction.guild?.name),
@@ -90,7 +90,7 @@ export class ModalHandler extends InteractionHandler {
 	}
 
 	public override parse(interaction: ModalSubmitInteraction) {
-		if (interaction.customId.startsWith(`${CustomIDPrefixes.cc_stage_1_long}:create:`)) return this.some();
+		if (interaction.customId.startsWith(`${CustomIDPrefixes.cc_stage_1_long}create:`)) return this.some();
 		return this.none();
 	}
 }

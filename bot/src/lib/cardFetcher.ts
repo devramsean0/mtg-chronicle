@@ -1,4 +1,4 @@
-import { container } from '@sapphire/framework';
+import { UserError, container } from '@sapphire/framework';
 import { cardNameRegex } from './constants.js';
 import { EmbedBuilder, Message } from 'discord.js';
 import { titleCase } from './utils.js';
@@ -6,6 +6,8 @@ import Scry, { Card } from 'scryfall-sdk';
 import { RedisTTLDurations } from './constants.js';
 import { PublicPaginatedMessage } from './extensions/PaignatedMessages.js';
 import { manamoji } from './emojis.js';
+import { CustomCards } from '@prisma/client';
+import { envParseString } from '@skyra/env-utilities';
 
 export class CardFetcher {
 	private paignation_enabled: boolean = true;
@@ -80,9 +82,6 @@ export class CardFetcher {
 			}
 		} else return JSON.parse(String(await container.redis.get(`card:${name}`)));
 	}
-	async fetchCustomCard() {
-		
-	}
 	createInfoCardEmbed(card: Card) {
 		const embed = new EmbedBuilder()
 			.setTitle(`${card.name} ${manamoji(String(card.mana_cost), )}`)
@@ -90,6 +89,29 @@ export class CardFetcher {
 			.setURL(card.scryfall_uri)
 			.setThumbnail(card.image_uris ? card.image_uris.normal : null);
 		return embed;
+	}
+	async createInfoCustomCardEmbed(card: CustomCards) {
+		const imageRow = await container.db.customCardImage.findFirst({
+			where: {
+				id: card.customCardImageId
+			},
+		});
+		if (!imageRow) throw new UserError({ identifier: 'CustomCardImageNotFound', message: 'Custom Card Image not found' });
+		const keeperChannel = await container.client.channels.fetch(envParseString('KEEPER_CHANNEL_ID'));
+		if (keeperChannel?.isTextBased()) {
+			const imageMessage = await keeperChannel.messages.fetch(String(imageRow.message_id));
+			const embed = new EmbedBuilder()
+				.setTitle(`${card.name} ${manamoji(String(card.mana_cost), )}`)
+				.setDescription(manamoji(`${String(card.type_line)}\n${card.oracleText}`))
+				.setImage(String(imageMessage.attachments.first()?.url))
+			return embed;
+		}
+		else {
+			const embed = new EmbedBuilder()
+				.setTitle(`${card.name} ${manamoji(String(card.mana_cost), )}`)
+				.setDescription(manamoji(`${String(card.type_line)}\n${card.oracleText}`))
+			return embed;
+		}
 	}
 	createImageCardEmbed(card: Card) {
 		const embed = new EmbedBuilder()
