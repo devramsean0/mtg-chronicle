@@ -48,6 +48,8 @@ async fn parse_job() -> Result<(), ExitFailure> {
     let start_time = Instant::now();
     let fetch_dump_api_object = fetch_dump_api_object().await?;
     let dump_data = fetch_dump_data(fetch_dump_api_object.download_uri).await?;
+    let parsed_end_time = Instant::now();
+    println!("Parsed from JSON in: {:?}", parsed_end_time.duration.since(start_time)); 
     // Do the loop
     for card in dump_data.as_array().unwrap() {
         let key_name = format!("card:{}", card["name"].as_str().unwrap());
