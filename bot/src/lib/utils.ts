@@ -1,4 +1,6 @@
 import {
+	Result,
+	UserError,
 	container,
 	type ChatInputCommandSuccessPayload,
 	type Command,
@@ -7,6 +9,8 @@ import {
 } from '@sapphire/framework';
 import { cyan } from 'colorette';
 import { type APIUser, type Guild, type User } from 'discord.js';
+import { deserialize, serialize } from 'binarytf';
+import { brotliCompressSync, brotliDecompressSync } from 'zlib';
 
 export function logSuccessCommand(payload: ContextMenuCommandSuccessPayload | ChatInputCommandSuccessPayload | MessageCommandSuccessPayload): void {
 	let successLoggerData: ReturnType<typeof getSuccessLoggerData>;
@@ -54,4 +58,33 @@ export function titleCase(str: string) {
     } else {
         return str.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
     }
+}
+
+export function compressCustomIDMetadata<T>(metadata: T) {
+	const serialized = brotliCompressSync(serialize<T>(metadata)).toString('binary');
+	console.log(`${serialized.length}: ${JSON.stringify(metadata)}: ${serialized}`)
+	if (serialized.length > 80) {
+		console.log(`Too Big Metadata: ${serialized.length}: ${JSON.stringify(metadata)}`)
+		throw new UserError({
+			identifier: 'CustomIDMetadataTooLarge',
+			message: 'The provided metadata is too large to be stored in a custom ID!\nReach out to support for more informtion :)'
+		})
+	}
+	return serialized;
+}
+
+export function decompressCustomIDMetadata<T>(content: string) {
+	const result = Result.from<T, Error>(() =>
+		deserialize<T>(brotliDecompressSync(Buffer.from(content, 'binary')))
+	)
+	return result.match({
+		ok: (value) => value,
+		err: (error) => {
+			console.error(error)
+			throw new UserError({
+				identifier: 'CustomIDMetadataDecompressionFailed',
+				message: 'Failed to decompress the metadata from the custom ID. Please reach out to support for more information.',
+			})
+		}
+	})
 }
