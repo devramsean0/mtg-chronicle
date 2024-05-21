@@ -22,7 +22,7 @@ const client = new SapphireClient({
 	loadMessageCommandListeners: true,
 	loadDefaultErrorListeners: true,
 	logger: {
-		level: process.env.DEBUG_LOGGING === 'true' ? LogLevel.Debug : LogLevel.Info
+		level: LogLevel.Debug
 	},
 	hmr: {
 		enabled: process.env.NODE_ENV === 'development'

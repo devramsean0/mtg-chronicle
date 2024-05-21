@@ -20,8 +20,13 @@ import { ICustomCardCreateButtonCustomIDMetadata } from '../interaction-handlers
 		{
 			name: 'edit',
 			chatInputRun: 'chatInputEdit'
+		},
+		{
+			name: 'delete',
+			chatInputRun: 'chatInputDelete'
 		}
-	]
+	],
+	preconditions: ['ServerManager']
 })
 export class UserCommand extends Subcommand {
 	public override registerApplicationCommands(registry: Subcommand.Registry) {
@@ -74,6 +79,18 @@ export class UserCommand extends Subcommand {
 					.setName('image')
 					.setDescription('The image of the card')
 					.setRequired(false)
+				))
+			))
+			.addSubcommand((subcommand) => (
+				subcommand
+				.setName('delete')
+				.setDescription('Delete a custom card')
+				.addStringOption(option => (
+					option
+					.setName('name')
+					.setDescription('The name of the card')
+					.setRequired(true)
+					.setAutocomplete(true)
 				))
 			))
 		);
@@ -148,7 +165,6 @@ export class UserCommand extends Subcommand {
 	public async chatInputGet(interaction: Subcommand.ChatInputCommandInteraction) {
 		const name = interaction.options.getString('name');
 		if (!name) return interaction.reply('You need to provide a name for the card!');
-		console.log(name, String(interaction.guild?.id))
 		const cardRow = await this.container.db.customCards.findFirst({
 			where: {
 				name: name,
@@ -218,7 +234,30 @@ export class UserCommand extends Subcommand {
 			components: [actionRow],
 		})
 	}
-
+	public async chatInputDelete(interaction: Subcommand.ChatInputCommandInteraction) {
+		const name = interaction.options.getString('name');
+		if (!name) return interaction.reply('You need to provide a name for the card!');
+		const cardRow = await this.container.db.customCards.findFirst({
+			where: {
+				name: name,
+				guild: {
+					discord_id: String(interaction.guild?.id)
+				}
+			}
+		});
+		if (!cardRow) return interaction.reply('The card was not found!');
+		await this.container.db.customCards.delete({
+			where: {
+				id: cardRow.id
+			}
+		});
+		await this.container.db.customCardImage.delete({
+			where: {
+				id: cardRow.customCardImageId
+			}
+		});
+		return interaction.reply('The card has been deleted!');
+	}
 	// Autocomplete!!!
 	public override async autocompleteRun(interaction: AutocompleteInteraction) {
 		const focused = interaction.options.getFocused(true);

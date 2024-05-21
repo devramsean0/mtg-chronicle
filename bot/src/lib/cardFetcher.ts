@@ -1,5 +1,5 @@
 import { UserError, container } from '@sapphire/framework';
-import { cardNameRegex } from './constants.js';
+import { customCardNameRegex, normalCardNameRegex } from './constants.js';
 import { EmbedBuilder, Message } from 'discord.js';
 import { titleCase } from './utils.js';
 import Scry, { Card } from 'scryfall-sdk';
@@ -16,35 +16,39 @@ export class CardFetcher {
 		this.logPrefix = logPrefix;
 	}
 	async parseForCards(message: Message) {
-		const matches = message.content.match(cardNameRegex);
-		if (!matches) return;
+		const normalMatches = message.content.match(normalCardNameRegex);
+		const customMatches = message.content.match(customCardNameRegex);
+		if (!normalMatches && !customMatches) return;
 		// Find Cards
-		container.logger.info(`${this.logPrefix} ${message.id} - Found ${matches.length} matches`);
-		const cards = matches.map((match) => match.slice(2, -2));
-		const normalizedCards = new Set(cards.map((card) => titleCase(card)));
-		return normalizedCards;
+		container.logger.info(`${this.logPrefix} ${message.id} - Found ${normalMatches?.length ?? 0} normal matches and ${customMatches?.length ?? 0} custom matches`);
+		const normalCards = normalMatches?.map((match) => match.slice(2, -2)) ?? [];
+		const customCards = customMatches?.map((match) => match.slice(2, -2)) ?? [];
+		const normalNormalizedCards = new Set(normalCards.map((card) => titleCase(card)));
+		const customNormalizedCards = new Set(customCards.map((card) => card));
+		return { normalNormalizedCards, customNormalizedCards };
 	}
-	async multicardSend(cardsSet: Set<string>, message: Message) {
-		const cards = Array.from(cardsSet);
+	async multicardSend(cardsSet: { normalNormalizedCards: Set<string>, customNormalizedCards: Set<string>}, message: Message) {
+		const normalCards = Array.from(cardsSet.normalNormalizedCards);
+		const customCards = Array.from(cardsSet.customNormalizedCards);
 		const embeds = [];
-		for (const card of cards) {
+		for (const card of normalCards) {
 			const initialChar = card.charAt(0);
 			const name = card.replace(initialChar, '');
 			let data;
 			let embed;
 			switch (initialChar) {
 				case '!':
-					data = await this.fetchCard(name);
+					data = await this.normalFetchCard(name);
 					embed = this.createImageCardEmbed(data);
 					embeds.push(embed);
 					continue;
 				case '#':
-					data = await this.fetchCard(name);
+					data = await this.normalFetchCard(name);
 					embed = this.createLegalityCardEmbed(data);
 					embeds.push(embed);
 					continue;
 				case '$':
-					data = await this.fetchCard(name);
+					data = await this.normalFetchCard(name);
 					embed = this.createPriceCardEmbed(data);
 					embeds.push(embed);
 					continue;
@@ -55,15 +59,32 @@ export class CardFetcher {
 					}
 					continue;
 				default:
-					data = await this.fetchCard(card);
+					data = await this.normalFetchCard(card);
 					embed = this.createInfoCardEmbed(data);
 					embeds.push(embed);
 			}
 
 		}
+		for (const card of customCards) {
+			const initialChar = card.charAt(0);
+			const name = card.replace(initialChar, '');
+			let data;
+			let embed;
+			switch (initialChar) {
+				case '!':
+					data = await this.customFetchCard(name, message);
+					embed = this.createImageCustomCardEmbed(data);
+					embeds.push(embed);
+					continue;
+				default:
+					data = await this.customFetchCard(card, message);
+					embed = await this.createInfoCustomCardEmbed(data);
+					embeds.push(embed);
+			}
+		}
 		this.displayCardList(embeds, message);
 	}
-	async fetchCard(name: string) {
+	async normalFetchCard(name: string) {
 		if (!name) throw new Error('No name provided');
 		if (!(await container.redis.exists(`card:${name}`))) {
 			const card = await Scry.Cards.byName(name, true);
@@ -81,6 +102,34 @@ export class CardFetcher {
 				return card;
 			}
 		} else return JSON.parse(String(await container.redis.get(`card:${name}`)));
+	}
+	async customFetchCard(name: string, message: Message) {
+		if (!name) throw new Error('No name provided');
+		console.log(name, message.guild?.id)
+		const card = await container.db.customCards.findFirst({
+			where: {
+				name: name,
+				guild: {
+					discord_id: String(message.guildId)
+				}
+			},
+		});
+		if (!card) throw new UserError({ identifier: 'CustomCardNotFound', message: 'Custom Card not found' });
+		const imageRow = await container.db.customCardImage.findFirst({
+			where: {
+				id: card.customCardImageId
+			},
+		});
+		if (!imageRow) throw new UserError({ identifier: 'CustomCardImageNotFound', message: 'Custom Card Image not found' });
+		const keeperChannel = await container.client.channels.fetch(envParseString('KEEPER_CHANNEL_ID'));
+		if (keeperChannel?.isTextBased()) {
+			const imageMessage = await keeperChannel.messages.fetch(String(imageRow.message_id));
+			// @ts-expect-error
+			card.image_url = String(imageMessage.attachments.first()?.url);
+			console.log(card)
+			return card;
+		}
+		return card;
 	}
 	createInfoCardEmbed(card: Card) {
 		const embed = new EmbedBuilder()
@@ -103,15 +152,33 @@ export class CardFetcher {
 			const embed = new EmbedBuilder()
 				.setTitle(`${card.name} ${manamoji(String(card.mana_cost), )}`)
 				.setDescription(manamoji(`${String(card.type_line)}\n${card.oracleText}`))
-				.setImage(String(imageMessage.attachments.first()?.url))
+				.setThumbnail(String(imageMessage.attachments.first()?.url))
+				.setFooter({
+					text: `CUSTOM`
+				})
 			return embed;
 		}
 		else {
 			const embed = new EmbedBuilder()
 				.setTitle(`${card.name} ${manamoji(String(card.mana_cost), )}`)
 				.setDescription(manamoji(`${String(card.type_line)}\n${card.oracleText}`))
+				.setFooter({
+					text: `CUSTOM`
+				})
 			return embed;
 		}
+	}
+	createImageCustomCardEmbed(card: CustomCards) {
+		// @ts-expect-error
+		console.log(card.card_url)
+		const embed = new EmbedBuilder()
+			.setTitle(`${card.name} ${manamoji(String(card.mana_cost), )}`)
+			// @ts-expect-error
+			.setImage(card.image_url ? card.image_url : null)
+			.setFooter({
+				text: `CUSTOM`
+			});
+		return embed;
 	}
 	createImageCardEmbed(card: Card) {
 		const embed = new EmbedBuilder()

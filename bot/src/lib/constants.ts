@@ -4,7 +4,8 @@ export const rootDir = /* join(__dirname, '..', '..'); */ process.cwd();
 export const srcDir = join(rootDir, 'src');
 
 // Regex
-export const cardNameRegex = /\[\[([^\]]+)\]\]/g;
+export const normalCardNameRegex = /\[\[([^\]]+)\]\]/g;
+export const customCardNameRegex = /\<\<([^\>]+)\>\>/g;
 export const manaValueRegex = /\{(.*?)\}/g;
 
 // TTL
