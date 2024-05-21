@@ -37,7 +37,7 @@ export class UserCommand extends Command {
 				new ButtonBuilder()
 					.setLabel('Invite')
 					.setStyle(ButtonStyle.Link)
-					.setURL('https://discord.com/oauth2/authorize?client_id=1228981114190823484&permissions=67584&scope=bot+applications.commands'),
+					.setURL('https://discord.com/oauth2/authorize?client_id=1211325908024295444&permissions=67584&scope=bot+applications.commands'),
 				new ButtonBuilder()
 					.setLabel('Copyright Notice')
 					.setStyle(ButtonStyle.Link)
