@@ -11,7 +11,7 @@ import { decompressCustomIDMetadata } from '../../../lib/utils.js';
 export class ButtonHandler extends InteractionHandler {
 	public async run(interaction: ButtonInteraction) {
 		// Modal Time!!!
-		const customIDMetadata = interaction.customId.replaceAll(`${CustomIDPrefixes.cc_stage_2_long}additional_info:`, '');
+		const customIDMetadata = interaction.customId.replaceAll(`${CustomIDPrefixes.cc_stage_2_long}card_info:`, '');
 		const { cardID } = decompressCustomIDMetadata<ICustomCardCreateButtonCustomIDMetadata>(customIDMetadata);
 		const cardRow = await this.container.db.customCards.findUnique({
 			where: { id: cardID }
