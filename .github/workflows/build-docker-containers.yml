@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      
   pull_request:
     branches:
       - main
@@ -11,6 +12,7 @@ on:
 
 jobs:
   check_changes:
+    if: github.ref != 'refs/heads/merge-queue'
     runs-on: ubuntu-latest
     outputs:
       dump-parser: ${{ steps.changes.outputs.dump-parser }}
