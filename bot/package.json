@@ -8,7 +8,7 @@
 	"dependencies": {
 		"@prisma/client": "^5.12.1",
 		"@sapphire/decorators": "^6.0.4",
-		"@sapphire/discord.js-utilities": "7.1.6",
+		"@sapphire/discord.js-utilities": "7.2.1",
 		"@sapphire/framework": "^5.0.7",
 		"@sapphire/plugin-api": "^6.1.1",
 		"@sapphire/plugin-hmr": "^3.0.1",
@@ -28,7 +28,7 @@
 		"@sapphire/ts-config": "^5.0.0",
 		"@types/node": "^20.11.5",
 		"@types/ws": "^8.5.10",
-		"npm-run-all2": "^5.0.0",
+		"npm-run-all2": "^6.0.0",
 		"prettier": "^3.2.4",
 		"prisma": "^5.12.1",
 		"tsc-watch": "^6.0.4",
@@ -46,7 +46,7 @@
 	},
 	"prettier": "@sapphire/prettier-config",
 	"volta": {
-		"node": "20.12.2",
-		"yarn": "4.1.1"
+		"node": "20.13.1",
+		"yarn": "4.2.2"
 	}
 }

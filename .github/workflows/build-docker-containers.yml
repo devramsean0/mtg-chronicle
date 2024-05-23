@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      
   pull_request:
     branches:
       - main
@@ -11,13 +12,14 @@ on:
 
 jobs:
   check_changes:
+    if: github.ref != 'refs/heads/merge-queue'
     runs-on: ubuntu-latest
     outputs:
       dump-parser: ${{ steps.changes.outputs.dump-parser }}
       bot: ${{ steps.changes.outputs.bot }}
     steps:
       - uses: actions/checkout@v4
-      - uses: dorny/paths-filter@v2
+      - uses: dorny/paths-filter@v3
         id: changes
         with:
           filters: |
