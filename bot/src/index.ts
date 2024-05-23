@@ -27,6 +27,13 @@ const client = new SapphireClient({
 	hmr: {
 		enabled: process.env.NODE_ENV === 'development'
 	},
+	api: {
+		prefix: '',
+		origin: '*',
+		listenOptions: {
+			port: 3000
+		}
+	},
 	shards: 'auto'
 });
 

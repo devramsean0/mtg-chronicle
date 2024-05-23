@@ -393,6 +393,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@sapphire/plugin-api@npm:^6.1.1":
+  version: 6.1.1
+  resolution: "@sapphire/plugin-api@npm:6.1.1"
+  dependencies:
+    "@types/ws": "npm:^8.5.10"
+    tldts: "npm:^6.1.2"
+    tslib: "npm:^2.6.2"
+    undici: "npm:^6.4.0"
+  checksum: 10c0/7df4c3ebf2804c2ee687670a3b940fa8bdf978e08d955afb683876e8482f1d8fc9982174a369e23c39230b34b82e9e0aa7264791c7df4b6f11269def15e9a28a
+  languageName: node
+  linkType: hard
+
 "@sapphire/plugin-hmr@npm:^3.0.1":
   version: 3.0.1
   resolution: "@sapphire/plugin-hmr@npm:3.0.1"
@@ -2165,6 +2177,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tldts-core@npm:^6.1.21":
+  version: 6.1.21
+  resolution: "tldts-core@npm:6.1.21"
+  checksum: 10c0/f458056d665398204e62ffccc8ac821d63f58ec115de3351f9611ce46aceac22db0db0d809a395e1327770d0cb5ad69c6abdbf539e5463ba4c4b93e1114bd987
+  languageName: node
+  linkType: hard
+
+"tldts@npm:^6.1.2":
+  version: 6.1.21
+  resolution: "tldts@npm:6.1.21"
+  dependencies:
+    tldts-core: "npm:^6.1.21"
+  bin:
+    tldts: bin/cli.js
+  checksum: 10c0/7686fb459c0131522f4842737dcc1fb25c98ef51be25b2ed12cfc70abe720903eda2fb98477d24644fc5828ff7f5666f7755cc85363d3bcd36f40ec160d34237
+  languageName: node
+  linkType: hard
+
 "to-regex-range@npm:^5.0.1":
   version: 5.0.1
   resolution: "to-regex-range@npm:5.0.1"
@@ -2267,6 +2297,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"undici@npm:^6.4.0":
+  version: 6.18.1
+  resolution: "undici@npm:6.18.1"
+  checksum: 10c0/9943522fd3aa1890173038c0f8e639d06e64d705cb6a95f77fb04b8c9d7e0835c2a22ab33f3fc83ae395c924b32cf811f46f3ca8ec055484e64875f06bcbf1db
+  languageName: node
+  linkType: hard
+
 "unique-filename@npm:^3.0.0":
   version: 3.0.0
   resolution: "unique-filename@npm:3.0.0"
@@ -2326,6 +2363,7 @@ __metadata:
     "@sapphire/decorators": "npm:^6.0.4"
     "@sapphire/discord.js-utilities": "npm:7.1.6"
     "@sapphire/framework": "npm:^5.0.7"
+    "@sapphire/plugin-api": "npm:^6.1.1"
     "@sapphire/plugin-hmr": "npm:^3.0.1"
     "@sapphire/plugin-logger": "npm:^4.0.2"
     "@sapphire/plugin-subcommands": "npm:^6.0.3"
