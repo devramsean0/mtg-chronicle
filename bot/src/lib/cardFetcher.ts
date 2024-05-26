@@ -134,9 +134,12 @@ export class CardFetcher {
 	createInfoCardEmbed(card: Card) {
 		const embed = new EmbedBuilder()
 			.setTitle(`${card.name} ${manamoji(String(card.mana_cost), )}`)
-			.setDescription(manamoji(`${String(card.type_line)}\n${card.oracle_text}`))
+			.setDescription(manamoji(`${String(card.type_line)}\n${card.oracle_text}\n${card.power}/${card.toughness}`))
 			.setURL(card.scryfall_uri)
-			.setThumbnail(card.image_uris ? card.image_uris.normal : null);
+			.setThumbnail(card.image_uris ? card.image_uris.normal : null)
+			.setFooter({
+				text: `${card.set_name}`
+			})
 		return embed;
 	}
 	async createInfoCustomCardEmbed(card: CustomCards) {
@@ -151,10 +154,10 @@ export class CardFetcher {
 			const imageMessage = await keeperChannel.messages.fetch(String(imageRow.message_id));
 			const embed = new EmbedBuilder()
 				.setTitle(`${card.name} ${manamoji(String(card.mana_cost), )}`)
-				.setDescription(manamoji(`${String(card.type_line)}\n${card.oracleText}`))
+				.setDescription(manamoji(`${String(card.type_line)}\n${card.oracleText}\n${card.power}/${card.toughness}`))
 				.setThumbnail(String(imageMessage.attachments.first()?.url))
 				.setFooter({
-					text: `CUSTOM`
+					text: `${card.setCode} ${card.setName}`
 				})
 			return embed;
 		}
