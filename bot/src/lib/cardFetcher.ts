@@ -150,11 +150,15 @@ export class CardFetcher {
 		});
 		if (!imageRow) throw new UserError({ identifier: 'CustomCardImageNotFound', message: 'Custom Card Image not found' });
 		const keeperChannel = await container.client.channels.fetch(envParseString('KEEPER_CHANNEL_ID'));
+
+		// Power
+		const power = card.power ? `${card.power}/` : '';
+		const toughness = card.toughness ? `${card.toughness}` : '';
 		if (keeperChannel?.isTextBased()) {
 			const imageMessage = await keeperChannel.messages.fetch(String(imageRow.message_id));
 			const embed = new EmbedBuilder()
 				.setTitle(`${card.name} ${manamoji(String(card.mana_cost), )}`)
-				.setDescription(manamoji(`${String(card.type_line)}\n${card.oracleText}\n${card.power}/${card.toughness}`))
+				.setDescription(manamoji(`${String(card.type_line)}\n${card.oracleText}\n${power}${toughness}`))
 				.setThumbnail(String(imageMessage.attachments.first()?.url))
 				.setFooter({
 					text: `${card.setCode} ${card.setName}`
@@ -163,8 +167,8 @@ export class CardFetcher {
 		}
 		else {
 			const embed = new EmbedBuilder()
-				.setTitle(`${card.name} ${manamoji(String(card.mana_cost), )}`)
-				.setDescription(manamoji(`${String(card.type_line)}\n${card.oracleText}`))
+				.setTitle(`${card.name} ${manamoji(String(card.mana_cost),)}`)
+				.setDescription(manamoji(`${String(card.type_line)}\n${card.oracleText}\n${power}${toughness}`))
 				.setFooter({
 					text: `CUSTOM`
 				})
