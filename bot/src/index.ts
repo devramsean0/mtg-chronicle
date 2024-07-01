@@ -4,6 +4,7 @@ import { LogLevel, SapphireClient, container } from '@sapphire/framework';
 import { GatewayIntentBits } from 'discord.js';
 import { createClient } from 'redis';
 import { PrismaClient } from '@prisma/client';
+import { IntegrationStore } from './lib/structures/integrationStore.js';
 
 // Setup REDIS for caching
 const redisClient = createClient({
@@ -36,7 +37,7 @@ const client = new SapphireClient({
 	},
 	shards: 'auto'
 });
-
+client.stores.register(new IntegrationStore()); // Register the integrations store before login
 const main = async () => {
 	try {
 		// Redis
@@ -44,6 +45,7 @@ const main = async () => {
 		// Modify Container
 		container.redis = redisClient;
 		container.cardCache = new Map<string, any>();
+		container.cronCache = new Map<string, any>();
 		client.logger.info('Connected to Redis');
 		await container.db.$connect();
 		client.logger.info('Connected to DB');
@@ -63,12 +65,18 @@ declare module '@sapphire/pieces' {
 	interface Container {
 		redis: typeof redisClient;
 		cardCache: Map<string, any>;
+		cronCache: Map<string, any>;
 		db: PrismaClient;
+	}
+
+	interface StoreRegistryEntries {
+		integrations: IntegrationStore;
 	}
 }
 
 declare module '@skyra/env-utilities' {
 	interface Env {
+		OWNER_ID: string;
 		KEEPER_CHANNEL_ID: string;
 	}
 }

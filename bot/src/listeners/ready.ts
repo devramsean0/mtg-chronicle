@@ -54,6 +54,7 @@ ${line03}${dev ? ` ${pad}${blc('<')}${llc('/')}${blc('>')} ${llc('DEVELOPMENT MO
 			`Loaded ${this.container.client.guilds.cache.size} guilds.`,
 			`Loaded ${this.container.client.channels.cache.size} channels.`,
 			`Loaded ${this.container.client.users.cache.size} users.`,
+			`Loaded ${await this.container.db.guildIntegration.count()} registered integrations.`,
 		]
 		const last = statisticMessages.pop()!;
 		for (const message of statisticMessages) this.container.logger.info(this.printStatistic(message, false));
