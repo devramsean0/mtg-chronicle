@@ -278,7 +278,7 @@ export class UserCommand extends Subcommand {
 					}
 				})
 				const parsed = result.map((match) => ({name: match.name, value: match.name}));
-				return interaction.respond(parsed);
+				return interaction.respond(parsed.slice(0, 25));
 			default:
 				return [];
 		}

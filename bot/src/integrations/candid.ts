@@ -25,7 +25,6 @@ export class CandidIntegration extends Integration {
         });
         await this.processPage(res.matches, guild);
         let totalPages = res.maxPages;
-        this.container.logger.debug(`[integrations]: [candid]: Total pages: ${totalPages}`)
         for (let i = 2; i <= totalPages; i++) {
             const res = await fetch<ICandidSearchResponse>(`${this.baseURL}/search?pageNum=${i}`, {
                 headers: {
