@@ -207,12 +207,14 @@ export class UserCommand extends Subcommand {
 					customCardImageId: imageRow.id
 				}
 			});
-			// Delete the old image (ID is pulled from previously created object)
-			await this.container.db.customCardImage.delete({
-				where: {
-					id: cardRow.customCardImageId
-				}
-			});
+			if (cardRow.customCardImageId) {
+				// Delete the old image (ID is pulled from previously created object)
+				await this.container.db.customCardImage.delete({
+					where: {
+						id: cardRow.customCardImageId
+					}
+				});
+			}
 		}
 		const compressedMetadata = compressCustomIDMetadata<ICustomCardCreateButtonCustomIDMetadata>({ cardID: cardRow.id });
 		const aditionalCardInfoButton = new ButtonBuilder()
@@ -251,11 +253,13 @@ export class UserCommand extends Subcommand {
 				id: cardRow.id
 			}
 		});
-		await this.container.db.customCardImage.delete({
-			where: {
-				id: cardRow.customCardImageId
-			}
-		});
+		if (cardRow.customCardImageId) {
+			await this.container.db.customCardImage.delete({
+				where: {
+					id: cardRow.customCardImageId
+				}
+			});
+		}
 		return interaction.reply('The card has been deleted!');
 	}
 	// Autocomplete!!!

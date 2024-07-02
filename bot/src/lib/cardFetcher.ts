@@ -105,7 +105,6 @@ export class CardFetcher {
 	}
 	async customFetchCard(name: string, message: Message) {
 		if (!name) throw new Error('No name provided');
-		console.log(name, message.guild?.id)
 		const card = await container.db.customCards.findFirst({
 			where: {
 				name: name,
@@ -115,20 +114,6 @@ export class CardFetcher {
 			},
 		});
 		if (!card) throw new UserError({ identifier: 'CustomCardNotFound', message: 'Custom Card not found' });
-		const imageRow = await container.db.customCardImage.findFirst({
-			where: {
-				id: card.customCardImageId
-			},
-		});
-		if (!imageRow) throw new UserError({ identifier: 'CustomCardImageNotFound', message: 'Custom Card Image not found' });
-		const keeperChannel = await container.client.channels.fetch(envParseString('KEEPER_CHANNEL_ID'));
-		if (keeperChannel?.isTextBased()) {
-			const imageMessage = await keeperChannel.messages.fetch(String(imageRow.message_id));
-			// @ts-expect-error
-			card.image_url = String(imageMessage.attachments.first()?.url);
-			console.log(card)
-			return card;
-		}
 		return card;
 	}
 	createInfoCardEmbed(card: Card) {
@@ -143,7 +128,7 @@ export class CardFetcher {
 		return embed;
 	}
 	async createInfoCustomCardEmbed(card: CustomCards) {
-		const imageRow = await container.db.customCardImage.findFirst({
+/* 		const imageRow = await container.db.customCardImage.findFirst({
 			where: {
 				id: card.customCardImageId
 			},
@@ -173,7 +158,33 @@ export class CardFetcher {
 					text: `CUSTOM`
 				})
 			return embed;
+		} */
+		let imageURL = "";
+		if (card.customCardImageId) {
+			const imageRow = await container.db.customCardImage.findFirst({
+				where: {
+					id: card.customCardImageId
+				},
+			});
+			if (!imageRow) throw new UserError({ identifier: 'CustomCardImageNotFound', message: 'Custom Card Image not found' });
+			const keeperChannel = await container.client.channels.fetch(envParseString('KEEPER_CHANNEL_ID'));
+			if (!keeperChannel) throw new UserError({ identifier: 'KeeperChannelNotFound', message: 'Keeper Channel not found, please contact support' });
+			if (!keeperChannel.isTextBased()) throw new UserError({ identifier: 'KeeperChannelNotTextBased', message: 'Keeper Channel is not text based, please contact support' });
+			const imageMessage = await keeperChannel.messages.fetch(String(imageRow.message_id));
+			imageURL = String(imageMessage.attachments.first()?.url);
+		} else {
+			imageURL = card.imageUrl;
 		}
+		const power = card.power ? `${card.power}/` : '';
+		const toughness = card.toughness ? `${card.toughness}` : '';
+		const embed = new EmbedBuilder()
+			.setTitle(`${card.name} ${manamoji(String(card.mana_cost), )}`)
+			.setDescription(manamoji(`${String(card.type_line)}\n${card.oracleText}\n${power}${toughness}`))
+			.setThumbnail(imageURL)
+			.setFooter({
+				text: `${card.setCode} ${card.setName}`
+			})
+		return embed;
 	}
 	createImageCustomCardEmbed(card: CustomCards) {
 		// @ts-expect-error

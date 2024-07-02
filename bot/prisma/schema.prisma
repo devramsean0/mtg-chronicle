@@ -43,9 +43,9 @@ model CustomCards {
   oracleText        String // Stage 1
   guild             Guild           @relation(fields: [guildId], references: [id])
   guildId           String
-  CustomCardImage   CustomCardImage @relation(fields: [customCardImageId], references: [id])
+  CustomCardImage   CustomCardImage? @relation(fields: [customCardImageId], references: [id])
   imageUrl         String @default("")// Filled when card is imported from a Integration
-  customCardImageId Int
+  customCardImageId Int?
 }
 
 model GuildIntegration {

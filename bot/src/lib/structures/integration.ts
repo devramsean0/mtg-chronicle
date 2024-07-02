@@ -4,12 +4,14 @@ export class Integration<Options extends Integration.Options = Integration.Optio
     public readonly description: string;
     public readonly cronSchedule : string | null;
     public readonly gatedTo: string[] | null;
+    public readonly baseURL: string | null;
 
     public constructor(context: Integration.LoaderContext, options: Integration.Options = {description: 'Please Set me!'}) {
         super(context, options);
         this.description = options.description;
         this.cronSchedule = options.cronSchedule ?? null;
         this.gatedTo = options.gatedTo ?? null;
+        this.baseURL = options.baseURL ?? null;
     }
     public fetchCards(_guildId: string, _auth: string) {}
 }
@@ -18,6 +20,7 @@ export interface IntegrationOptions extends Piece.Options {
     description: string;
     cronSchedule?: string | null;
     gatedTo?: string[] | null;
+    baseURL?: string | null;
 }
 
 
