@@ -47,6 +47,6 @@
 	"prettier": "@sapphire/prettier-config",
 	"volta": {
 		"node": "20.13.1",
-		"yarn": "4.2.2"
+		"yarn": "4.5.1"
 	}
 }
